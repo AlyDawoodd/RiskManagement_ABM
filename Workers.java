@@ -22,6 +22,7 @@ public class Workers extends SimState {
     public Game game;
     public Report report;
     public Network reporting = new Network(false);
+    public boolean someoneCrashed = false;
 
 
     public static boolean UI = false;

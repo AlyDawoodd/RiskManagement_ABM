@@ -14,33 +14,39 @@ public class Report implements Steppable {
     public void step(SimState state) {
         currentWorkers.clear();
         numReporters = 0;
-        //decide how many of the four coworkers reported
-        for (Worker worker : Workers.listWorkers) {
-            if (worker.isPlaying) {
-                currentWorkers.add(worker);
-                if (worker.isReporter && !worker.isCrash)
-                    numReporters++;
-                if (worker.isCrash)
-                    crashedWorker = worker;
+        Workers workers = (Workers) state;
+
+        if(workers.someoneCrashed){
+            //decide how many of the four coworkers reported
+            for (Worker worker : Workers.listWorkers) {
+                if (worker.isPlaying) {
+                    currentWorkers.add(worker);
+                    if (worker.isReporter && !worker.isCrash)
+                        numReporters++;
+                    if (worker.isCrash)
+                        crashedWorker = worker;
+                }
             }
-        }
-        if (crashedWorker.accountability >= 0.5) {
-            //this worker pays or not based on
-            if(crashedWorker.timeCrash==1){
-                //nothing
-            }
-            //and so on
+            if (crashedWorker.accountability >= 0.5) {
+                //this worker pays or not based on
+                if(crashedWorker.timeCrash==1){
+                    //nothing
+                }
+                //and so on
 
 
-            //OR
-            costProbability = (1-crashedWorker.timeCrash) * 0.25;
-            if(costProbability > 1)
-                costProbability = 1;
-            crashedWorker.cost = crashedWorker.accountability * costProbability; //or anything else
+                //OR
+                costProbability = (1-crashedWorker.timeCrash) * 0.25;
+                if(costProbability > 1)
+                    costProbability = 1;
+                crashedWorker.cost = crashedWorker.accountability * costProbability; //or anything else
+            }
+            else{
+                //now we use number of players who report for equations
+            }
+
         }
-        else{
-            //now we use number of players who report for equations
-        }
+        workers.someoneCrashed = false;
 
     }
 }
