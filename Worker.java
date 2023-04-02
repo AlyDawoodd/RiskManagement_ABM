@@ -12,6 +12,13 @@ public class Worker implements Steppable, Comparable<Worker> {
     public int number;
     public double utility = 0;
     double accountability;
+    double qReport = 1;
+    double qDontReport = 1;
+    double pReport = 0.5;
+    double pDontReport = 0.5;
+    double Pi;
+    double Ps;
+    double probAcc;
 
 
     public double getCost() {
@@ -43,10 +50,10 @@ public class Worker implements Steppable, Comparable<Worker> {
     }
     public boolean individualLearning(double forgetting, double experimenting, double N) {
 		
-        if (this.action == true) {
+        if (this.isReporter == true) {
      qReport = qReport * (1 - forgetting) + ( this.utility * (1 - experimenting));
      qDontReport = qDontReport * (1 - forgetting)+ this.utility*experimenting/(N-1);
-        } else if (this.action == false) {
+        } else if (this.isReporter == false) {
             qDontReport = qDontReport * (1 - forgetting) + (this.utility * (1 - experimenting));
             qReport = qReport * (1 - forgetting)+this.utility*experimenting/(N-1);
         }
@@ -65,7 +72,7 @@ public class Worker implements Steppable, Comparable<Worker> {
 
 
         if(pReport==pDontReport){
-            return this.action;
+            return this.isReporter;
         }
         else if (pDontReport <= pReport && Pi < pDontReport) { // pDontReport LOWER THAN pReport AND P LOWER THAN pDontReport SO Dont report
 
@@ -95,6 +102,17 @@ public class Worker implements Steppable, Comparable<Worker> {
 
     @Override
     public void step(SimState state) {
+        if (this.isCrash){
+            Workers workers = (Workers) state;
+            probAcc=Math.random();
+            if(probAcc<=this.accountability&&this.timeCrash==1){ // free card
+                this.utility=-cost;
+
+            } else if (probAcc<this.accountability&& this.timeCrash>1) {
+                // Punishment
+            }
+
+        }
         if(this.isPlaying){
             Workers workers = (Workers) state;
             //insert here your actions and equations
