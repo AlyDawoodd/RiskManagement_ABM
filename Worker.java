@@ -41,6 +41,50 @@ public class Worker implements Steppable, Comparable<Worker> {
         }
         return -1;
     }
+    public boolean individualLearning(double forgetting, double experimenting, double N) {
+		
+        if (this.action == true) {
+     qReport = qReport * (1 - forgetting) + ( this.utility * (1 - experimenting));
+     qDontReport = qDontReport * (1 - forgetting)+ this.utility*experimenting/(N-1);
+        } else if (this.action == false) {
+            qDontReport = qDontReport * (1 - forgetting) + (this.utility * (1 - experimenting));
+            qReport = qReport * (1 - forgetting)+this.utility*experimenting/(N-1);
+        }
+	  if(this.utility>0){
+
+        pReport = qReport / (qReport + qDontReport);
+        pDontReport = qDontReport / (qReport + qDontReport);
+	  }
+	  else{
+		 pReport =Math.exp(qReport)/Math.exp(qReport + qDontReport);
+		 pDontReport=Math.exp(qDontReport)/Math.exp(qReport + qDontReport);
+		
+	  }
+        Pi = Math.random();
+      //  System.out.println("P: " + Pi + "   pReport:" + pReport + "  pDontReport:" + pDontReport);
+
+
+        if(pReport==pDontReport){
+            return this.action;
+        }
+        else if (pDontReport <= pReport && Pi < pDontReport) { // pDontReport LOWER THAN pReport AND P LOWER THAN pDontReport SO Dont report
+
+            return false;
+        }
+      else   if (pDontReport <= pReport && Pi > pDontReport) {// pDontReport LOWER THAN pReport AND P HIGHER THAN pDontReport SO Report
+
+            return true;
+        }
+        else if (pReport <= pDontReport && Pi < pReport) {// pReport LOWER THAN pDontReport AND P LOWER THAN pReport SO Report
+
+            return true;
+        } else { // pReport LOWER THAN pDontReport AND P HIGHER THAN pReport SO Dont report
+
+            return false;
+        }
+
+
+    }
 
     public Worker(boolean isReporter, double cost, double accountability,int id) {
         this.isReporter = isReporter;
