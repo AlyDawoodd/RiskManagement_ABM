@@ -3,6 +3,7 @@ import sim.engine.Steppable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Report implements Steppable {
 
@@ -16,7 +17,7 @@ public class Report implements Steppable {
         numReporters = 0;
         Workers workers = (Workers) state;
 
-        if(workers.someoneCrashed){
+        if (workers.someoneCrashed) {
             //decide how many of the four coworkers reported
             for (Worker worker : Workers.listWorkers) {
                 if (worker.isPlaying) {
@@ -27,27 +28,43 @@ public class Report implements Steppable {
                         crashedWorker = worker;
                 }
             }
-            if (crashedWorker.accountability >= 0.5) {
-                //this worker pays or not based on
-                if(crashedWorker.timeCrash==1){
-                    //nothing
+
+            int firstReporter = ThreadLocalRandom.current().nextInt(0, 5); //0 to 4
+            if (crashedWorker.accountability >= 0.5 && crashedWorker.id % 5 == firstReporter) {
+                //0 1 2 3 4         divide by 5 == //0 1 2 3 4
+                //5 6 7 8 9         divide by 5 == //0 1 2 3 4
+                //10 11 12 13 14    divide by 5 == //0 1 2 3 4
+                if (crashedWorker.timeCrash == 1) {
+                    crashedWorker.utility = -crashedWorker.cost; //COST?
+                } else {
+                    //Punishment for the incident
+                    //crashedWorker.utility =
                 }
-                //and so on
+                for (Worker worker : currentWorkers) {
+                    worker.utility = -worker.cost;
+                }
 
+            } else {
+                double V = 100;
+                double actualV = V / numReporters;
+                for (Worker worker : currentWorkers
+                ) {
+                    worker.utility = actualV - worker.cost;
+                }
+                //crashedWorker.utility = ...;
+            }
+            //OR
+            costProbability = (crashedWorker.timeCrash - 1) * 0.25;
+            if (costProbability > 1)
+                costProbability = 1;
+            crashedWorker.cost = crashedWorker.accountability * costProbability; //or anything else
+//        } else {
+//            //now we use number of players who report for equations
+//        }
 
-                //OR
-                costProbability = (1-crashedWorker.timeCrash) * 0.25;
-                if(costProbability > 1)
-                    costProbability = 1;
-                crashedWorker.cost = crashedWorker.accountability * costProbability; //or anything else
-            }
-            else{
-                //now we use number of players who report for equations
-            }
+            workers.someoneCrashed = false;
 
         }
-        workers.someoneCrashed = false;
-
     }
 }
 

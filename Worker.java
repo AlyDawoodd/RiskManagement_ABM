@@ -99,21 +99,13 @@ public class Worker implements Steppable, Comparable<Worker> {
 
     @Override
     public void step(SimState state) {
-        if (this.isCrash) {
-            Workers workers = (Workers) state;
-            probAcc = Math.random();
-            if (probAcc <= this.accountability && this.timeCrash == 1) { // free card
-                this.utility = -cost;
+        Workers workers = (Workers) state;
 
-            } else if (probAcc < this.accountability && this.timeCrash > 1) {
-                // Punishment
-            }
-
-        }
-        if (this.isPlaying) {
-            Workers workers = (Workers) state;
-            //insert here your actions and equations
-        }
+        //accountability function
+        //action function
+        //report or not
+        //...
+        this.isReporter = individualLearning(workers.individualForgetting, workers.individualExperimenting, workers.numWorkers);
     }
 
     @Override
