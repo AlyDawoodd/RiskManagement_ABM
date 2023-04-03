@@ -16,6 +16,8 @@ public class Report implements Steppable {
         currentWorkers.clear();
         numReporters = 0;
         Workers workers = (Workers) state;
+        double reward = 100;
+        double actualV = reward / numReporters;
 
         if (workers.someoneCrashed) {
             //decide how many of the four coworkers reported
@@ -38,32 +40,21 @@ public class Report implements Steppable {
                     crashedWorker.utility = -crashedWorker.cost; //COST?
                 } else {
                     //Punishment for the incident
-                    //crashedWorker.utility =
+                    crashedWorker.utility = -reward - crashedWorker.cost;
+
                 }
                 for (Worker worker : currentWorkers) {
                     worker.utility = -worker.cost;
                 }
 
             } else {
-                double V = 100;
-                double actualV = V / numReporters;
                 for (Worker worker : currentWorkers
                 ) {
                     worker.utility = actualV - worker.cost;
                 }
-                //crashedWorker.utility = ...;
+                crashedWorker.utility = -reward;
             }
-            //OR
-            costProbability = (crashedWorker.timeCrash - 1) * 0.25;
-            if (costProbability > 1)
-                costProbability = 1;
-            crashedWorker.cost = crashedWorker.accountability * costProbability; //or anything else
-//        } else {
-//            //now we use number of players who report for equations
-//        }
-
             workers.someoneCrashed = false;
-
         }
     }
 }

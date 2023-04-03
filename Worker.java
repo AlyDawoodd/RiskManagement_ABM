@@ -54,19 +54,14 @@ public class Worker implements Steppable, Comparable<Worker> {
         if (this.isReporter) {
             qReport = qReport * (1 - forgetting) + (this.utility * (1 - experimenting));
             qDontReport = qDontReport * (1 - forgetting) + this.utility * experimenting / (N - 1);
-        } else{
+        } else {
             qDontReport = qDontReport * (1 - forgetting) + (this.utility * (1 - experimenting));
             qReport = qReport * (1 - forgetting) + this.utility * experimenting / (N - 1);
         }
-        if (this.utility > 0) {
 
-            pReport = qReport / (qReport + qDontReport);
-            pDontReport = qDontReport / (qReport + qDontReport);
-        } else {
-            pReport = Math.exp(qReport) / Math.exp(qReport + qDontReport);
-            pDontReport = Math.exp(qDontReport) / Math.exp(qReport + qDontReport);
+        pReport = Math.exp(qReport) / Math.exp(qReport + qDontReport);
+        pDontReport = Math.exp(qDontReport) / Math.exp(qReport + qDontReport);
 
-        }
         Pi = Math.random();
         //  System.out.println("P: " + Pi + "   pReport:" + pReport + "  pDontReport:" + pDontReport);
 
@@ -105,7 +100,7 @@ public class Worker implements Steppable, Comparable<Worker> {
         //action function
         //report or not
         //...
-        this.isReporter = individualLearning(workers.individualForgetting, workers.individualExperimenting, workers.numWorkers);
+        this.isReporter = individualLearning(workers.individualForgetting, workers.individualExperimenting, 2);
     }
 
     @Override
