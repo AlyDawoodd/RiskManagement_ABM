@@ -8,24 +8,29 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Report implements Steppable {
 
     public static List<Worker> currentWorkers = new ArrayList<Worker>();
-    public int numReporters = 0;
+    int numReportersRound;
     Worker crashedWorker = null;
     double costProbability = 0;
 
     public void step(SimState state) {
         currentWorkers.clear();
-        numReporters = 0;
+        Workers.numReporters = Workers.numNonReporters = 0;
+        for(Worker worker: Workers.listWorkers){
+            if(worker.isReporter)
+                Workers.numReporters++;
+            else
+                Workers.numNonReporters++;
+        }
+        numReportersRound = 0;
         Workers workers = (Workers) state;
-        double reward = 100;
-        double actualV = reward / numReporters;
-
+        double actualV = Workers.reward / Workers.numReporters;
         if (workers.someoneCrashed) {
             //decide how many of the four coworkers reported
             for (Worker worker : Workers.listWorkers) {
                 if (worker.isPlaying) {
                     currentWorkers.add(worker);
                     if (worker.isReporter && !worker.isCrash)
-                        numReporters++;
+                        numReportersRound++;
                     if (worker.isCrash)
                         crashedWorker = worker;
                 }
@@ -40,7 +45,7 @@ public class Report implements Steppable {
                     crashedWorker.utility = -crashedWorker.cost; //COST?
                 } else {
                     //Punishment for the incident
-                    crashedWorker.utility = -reward - crashedWorker.cost;
+                    crashedWorker.utility = -(Workers.reward) - crashedWorker.cost;
 
                 }
                 for (Worker worker : currentWorkers) {
@@ -52,7 +57,7 @@ public class Report implements Steppable {
                 ) {
                     worker.utility = actualV - worker.cost;
                 }
-                crashedWorker.utility = -reward;
+                crashedWorker.utility = -(Workers.reward);
             }
             workers.someoneCrashed = false;
         }

@@ -33,6 +33,8 @@ public class ReportingWithUi extends GUIState {
         return "Risk Management Game";
     }
 
+
+
     public Object getSimulationInspectedObject() {
         return state;
     }

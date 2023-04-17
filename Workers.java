@@ -13,8 +13,8 @@ public class Workers extends SimState {
     public static int reporters = 0;
     public static int sumOfReportesPerSim;
     public static int numWorkers = 50;
-    public int numReporters = numWorkers / 2;
-    public int numNonReporters = numWorkers / 2;
+    public static int numReporters = 0;
+    public static int numNonReporters = 0;
     public static double reward = 10.0;
     public static List<Worker> listWorkers = new ArrayList<Worker>();
     public static List<Double> reportersPerSimWithAvg = new ArrayList<>();
@@ -31,8 +31,24 @@ public class Workers extends SimState {
     public static boolean UI = false;
     public static boolean Sameplayer = false;
 
-    public static int getReporters() {
-        return reporters;
+    public int getNumReporters() {
+        return numReporters;
+    }
+
+    public static int getNumWorkers() {
+        return numWorkers;
+    }
+
+    public static double getReward() {
+        return reward;
+    }
+
+    public static void setReward(double reward) {
+        Workers.reward = reward;
+    }
+
+    public int getNumNonReporters() {
+        return numNonReporters;
     }
 
     public static void printResults(String players, String numOfPlayer, String learning, char caseStudy, int sampleSize) {
@@ -92,7 +108,10 @@ public class Workers extends SimState {
             double cost = getRandomUniform(1, 5);
             double accountability = Math.random();
             Worker worker = new Worker(random.nextBoolean(), cost, accountability, i); //creating an agent
-
+            if(worker.isReporter)
+                numReporters++;
+            else
+                numNonReporters++;
             //this is to adjust the GUI
             int x = i / 5;
             int y = x * 5;

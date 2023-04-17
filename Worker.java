@@ -25,6 +25,10 @@ public class Worker implements Steppable, Comparable<Worker> {
         return cost;
     }
 
+    public void setCost(double cost) {
+        if(cost>=0) this.cost = cost;
+    }
+
     public boolean getReporter() {
         return isReporter;
     }
