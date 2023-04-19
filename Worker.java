@@ -57,17 +57,17 @@ public class Worker implements Steppable, Comparable<Worker> {
 
         if (this.isReporter) {
             qReport = qReport * (1 - forgetting) + (this.utility * (1 - experimenting));
-            qDontReport = qDontReport * (1 - forgetting) + this.utility * experimenting / (N - 1);
+            qDontReport = (qDontReport * (1 - forgetting) + this.utility * experimenting )/ (N - 1);
         } else {
             qDontReport = qDontReport * (1 - forgetting) + (this.utility * (1 - experimenting));
-            qReport = qReport * (1 - forgetting) + this.utility * experimenting / (N - 1);
+            qReport = (qReport * (1 - forgetting) + this.utility * experimenting) / (N - 1);
         }
 
         pReport = Math.exp(qReport) / Math.exp(qReport + qDontReport);
         pDontReport = Math.exp(qDontReport) / Math.exp(qReport + qDontReport);
 
         Pi = Math.random();
-        //  System.out.println("P: " + Pi + "   pReport:" + pReport + "  pDontReport:" + pDontReport);
+        System.out.println("Probabiity: " + Pi + "   pReport:" + pReport + "  pDontReport:" + pDontReport);
 
 
         if (pReport == pDontReport) {

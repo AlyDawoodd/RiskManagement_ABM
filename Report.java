@@ -35,7 +35,12 @@ public class Report implements Steppable {
                         crashedWorker = worker;
                 }
             }
+            System.out.println(numReportersRound);
+            if(numReportersRound==0)
+                numReportersRound=1;
             double actualV = Workers.reward / numReportersRound;
+            System.out.println(actualV);
+
             int firstReporter = ThreadLocalRandom.current().nextInt(0, 5); //0 to 4
             if (crashedWorker.accountability >= 0.5 && crashedWorker.id % 5 == firstReporter) {
                 //0 1 2 3 4         divide by 5 == //0 1 2 3 4
