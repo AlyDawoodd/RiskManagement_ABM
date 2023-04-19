@@ -107,7 +107,12 @@ public class Workers extends SimState {
         for (int i = 0; i < numWorkers; i++) { // creation of workers
             double cost = getRandomUniform(1, 5);
             double accountability = Math.random();
-            Worker worker = new Worker(random.nextBoolean(), cost, accountability, i); //creating an agent
+            boolean isReporting= random.nextBoolean();
+            if(numReporters==numWorkers/2)
+                isReporting=false;
+            if(numNonReporters==numWorkers/2)
+                isReporting=true;
+            Worker worker = new Worker(isReporting, cost, accountability, i); //creating an agent
             if(worker.isReporter)
                 numReporters++;
             else
