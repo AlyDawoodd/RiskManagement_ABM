@@ -104,7 +104,8 @@ public class Worker implements Steppable, Comparable<Worker> {
         //action function
         //report or not
         //...
-        this.isReporter = individualLearning(workers.individualForgetting, workers.individualExperimenting, 2);
+        if (this.isPlaying)
+            this.isReporter = individualLearning(workers.individualForgetting, workers.individualExperimenting, 2);
     }
 
     @Override
