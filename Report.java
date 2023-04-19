@@ -42,22 +42,29 @@ public class Report implements Steppable {
                 //5 6 7 8 9         divide by 5 == //0 1 2 3 4
                 //10 11 12 13 14    divide by 5 == //0 1 2 3 4
                 if (crashedWorker.timeCrash == 1) {
-                    crashedWorker.utility = -crashedWorker.cost; //COST?
+                    crashedWorker.utility =crashedWorker.utility -crashedWorker.cost; //COST?
                 } else {
                     //Punishment for the incident
-                    crashedWorker.utility = -(Workers.reward) - crashedWorker.cost;
+                    crashedWorker.utility = crashedWorker.utility-(Workers.reward) - crashedWorker.cost;
 
                 }
                 for (Worker worker : currentWorkers) {
-                    worker.utility = -worker.cost;
+                    if (worker.isReporter)
+                        worker.utility = worker.utility-worker.cost;
+                    else {
+                        worker.utility=worker.utility;
+                    }
                 }
 
             } else {
-                for (Worker worker : currentWorkers
-                ) {
-                    worker.utility = actualV - worker.cost;
+                for (Worker worker : currentWorkers) {
+                    if(worker.isReporter)
+                        worker.utility =worker.utility+ actualV - worker.cost;
+                    else {
+                        worker.utility=worker.utility ;
+                    }
                 }
-                crashedWorker.utility = -(Workers.reward);
+                crashedWorker.utility =crashedWorker.utility -(Workers.reward);
             }
             workers.someoneCrashed = false;
         }
