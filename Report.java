@@ -23,7 +23,7 @@ public class Report implements Steppable {
         }
         numReportersRound = 0;
         Workers workers = (Workers) state;
-        double actualV = Workers.reward / Workers.numReporters;
+
         if (workers.someoneCrashed) {
             //decide how many of the four coworkers reported
             for (Worker worker : Workers.listWorkers) {
@@ -35,7 +35,7 @@ public class Report implements Steppable {
                         crashedWorker = worker;
                 }
             }
-
+            double actualV = Workers.reward / numReportersRound;
             int firstReporter = ThreadLocalRandom.current().nextInt(0, 5); //0 to 4
             if (crashedWorker.accountability >= 0.5 && crashedWorker.id % 5 == firstReporter) {
                 //0 1 2 3 4         divide by 5 == //0 1 2 3 4
