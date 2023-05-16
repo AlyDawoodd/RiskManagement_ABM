@@ -12,7 +12,7 @@ public class Workers extends SimState {
     public static Continuous2D yard = new Continuous2D(1.0, 100, 100);
     public static int reporters = 0;
     public static int sumOfReportesPerSim;
-    public static int numWorkers = 50;
+    public static int numWorkers = 5;
     public static int numReporters = 0;
     public static int numNonReporters = 0;
     public static double reward = 50.0;
@@ -27,7 +27,7 @@ public class Workers extends SimState {
     public static double individualExperimenting = 0.6;
 
     public static int sampleSize = 1000;
-     public static int T= sampleSize+1;
+     public static int T= 10;
 
 
 
@@ -146,48 +146,50 @@ public class Workers extends SimState {
             //we then take the next four players and connect them to him
             for (int j = 1; j < 5; j++) {
                 workerB = workers.get(i + j);
-                reporting.addEdge(worker, workerB, 1);//EDIT HERE
+                reporting.addEdge(worker, workerB, 1);
             }
         }
     }
 
     public static void main(String[] args) {
         UI = true;
-        //int sampleSize = 1000;
-        char caseStudy = '2';
-        float sum;
-        float avg;
-
-        String learning = "Social";
-        String numOfPlayers = "10players";
-        String players = "DiffPlayers";
         int simulationNumber = 1;
-        for (int i = 0; i < sampleSize; i++) {
+        //int sampleSize = 1000;
+    //    char caseStudy = '2';
+     //   float sum;
+      //  float avg;
+
+
+     /*   String learning = "Social";
+        String numOfPlayers = "10players";
+        String players = "DiffPlayers";*/
+
+      /*  for (int i = 0; i < sampleSize; i++) {
             reportersPerSimWithoutAvg.add(0);
-        }
-        for (int i = 0; i < simulationNumber; i++) {
+        }*/
+        for (int i = 0; i < simulationNumber; i++) {         // for loop for more than one simulation
             SimState state = new Workers(System.currentTimeMillis());
 
-           // System.out.println(T);
+           ;
             state.start();
             do {
-                //System.out.println(state.schedule.getSteps());
+
                T= Worker.updateT(T);
-               // System.out.println(T);
+
                 if (!state.schedule.step(state)) break;
             }
             while (state.schedule.getSteps() < sampleSize);
 
             state.finish();
-            System.out.println(numReporters);
+         //   System.out.println(numReporters); //  To Know the number of reporters after the sample size
         }
-        for (int i = 0; i < reportersPerSimWithoutAvg.size(); i++) {
+     /*   for (int i = 0; i < reportersPerSimWithoutAvg.size(); i++) {
             sum = reportersPerSimWithoutAvg.get(i);
             avg = sum / simulationNumber;
             reportersPerSimWithAvg.add(Math.floor(avg + 0.5));
         }
        // System.out.println(reportersPerSimWithAvg);
-        //  printResults(players, numOfPlayers, learning, caseStudy, sampleSize);
+        //  printResults(players, numOfPlayers, learning, caseStudy, sampleSize);*/
         System.exit(0);
     }
 }

@@ -76,11 +76,17 @@ public class Worker  implements Steppable{
             qDontReport = qDontReport * (1 - forgetting) + (this.utility * (1 - experimenting));
             qReport = qReport * (1 - forgetting) + this.utility * experimenting / (N - 1);
         }
-        System.out.println(qDontReport);
         System.out.println(qReport);
-        pReport = Math.exp(qReport/T) / (Math.exp(qReport/T)+ Math.exp(qDontReport/T)) ;
-        pDontReport = Math.exp(qDontReport/T) / (Math.exp(qReport/T)+ Math.exp(qDontReport/T));
+        System.out.println(qDontReport);
+        if((Math.exp(qReport/T)+ Math.exp(qDontReport/T))==0){ // avoiding 0 in the denominator-- WHEN QS are almost 0
+            pReport = Math.exp(qReport / T);
+            pDontReport = Math.exp(qDontReport / T);
 
+        }
+        else {
+            pReport = Math.exp(qReport / T) / (Math.exp(qReport / T) + Math.exp(qDontReport / T));
+            pDontReport = Math.exp(qDontReport / T) / (Math.exp(qReport / T) + Math.exp(qDontReport / T));
+        }
 
         Pi = Math.random();
        System.out.println("Probabiity: " + Pi + "   pReport:" + pReport + "  pDontReport:" + pDontReport);
