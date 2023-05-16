@@ -1,16 +1,24 @@
 import sim.engine.SimState;
 import sim.engine.Steppable;
+import sim.engine.*;
 
-public class Worker implements Steppable, Comparable<Worker> {
+import sim.field.continuous.*;
+
+import sim.field.network.*;
+import sim.util.Bag;
+import sim.util.Double2D;
+
+
+
+public class Worker  implements Steppable{
     int id;
     public boolean isReporter;
     int timeCrash = 0;
     boolean isPlaying = false;
     boolean isCrash = false;
     public double cost;
-    public double reward = 10.0;
     public int number;
-    public double utility = 0;
+    public double utility=0;
     double accountability;
     double qReport = 1;
     double qDontReport = 1;
@@ -20,6 +28,11 @@ public class Worker implements Steppable, Comparable<Worker> {
     double Ps;
     double probAcc;
 
+     public static int updateT(int t){
+         if(t!=1)
+           t--;
+         return t;
+     }
 
     public double getCost() {
         return cost;
@@ -53,32 +66,35 @@ public class Worker implements Steppable, Comparable<Worker> {
         return -1;
     }
 
-    public boolean individualLearning(double forgetting, double experimenting, double N) {
+    public boolean individualLearning(double forgetting, double experimenting, double N, int T) {
 
+        System.out.println(T);
         if (this.isReporter) {
             qReport = qReport * (1 - forgetting) + (this.utility * (1 - experimenting));
-            qDontReport = (qDontReport * (1 - forgetting) + this.utility * experimenting )/ (N - 1);
+            qDontReport = qDontReport * (1 - forgetting) + this.utility * experimenting / (N - 1);
         } else {
             qDontReport = qDontReport * (1 - forgetting) + (this.utility * (1 - experimenting));
-            qReport = (qReport * (1 - forgetting) + this.utility * experimenting) / (N - 1);
+            qReport = qReport * (1 - forgetting) + this.utility * experimenting / (N - 1);
         }
+        System.out.println(qDontReport);
+        System.out.println(qReport);
+        pReport = Math.exp(qReport/T) / (Math.exp(qReport/T)+ Math.exp(qDontReport/T)) ;
+        pDontReport = Math.exp(qDontReport/T) / (Math.exp(qReport/T)+ Math.exp(qDontReport/T));
 
-        pReport = Math.exp(qReport) / Math.exp(qReport + qDontReport);
-        pDontReport = Math.exp(qDontReport) / Math.exp(qReport + qDontReport);
 
         Pi = Math.random();
-        System.out.println("Probabiity: " + Pi + "   pReport:" + pReport + "  pDontReport:" + pDontReport);
+       System.out.println("Probabiity: " + Pi + "   pReport:" + pReport + "  pDontReport:" + pDontReport);
 
 
         if (pReport == pDontReport) {
             return this.isReporter;
-        } else if (pDontReport <= pReport && Pi < pDontReport) { // pDontReport LOWER THAN pReport AND P LOWER THAN pDontReport SO Dont report
+        } else if (pDontReport < pReport && Pi < pDontReport) { // pDontReport LOWER THAN pReport AND P LOWER THAN pDontReport SO Dont report
 
             return false;
-        } else if (pDontReport <= pReport && Pi > pDontReport) {// pDontReport LOWER THAN pReport AND P HIGHER THAN pDontReport SO Report
+        } else if (pDontReport < pReport && Pi > pDontReport) {// pDontReport LOWER THAN pReport AND P HIGHER THAN pDontReport SO Report
 
             return true;
-        } else if (pReport <= pDontReport && Pi < pReport) {// pReport LOWER THAN pDontReport AND P LOWER THAN pReport SO Report
+        } else if (pReport < pDontReport && Pi < pReport) {// pReport LOWER THAN pDontReport AND P LOWER THAN pReport SO Report
 
             return true;
         } else { // pReport LOWER THAN pDontReport AND P HIGHER THAN pReport SO Dont report
@@ -105,11 +121,12 @@ public class Worker implements Steppable, Comparable<Worker> {
         //report or not
         //...
         if (this.isPlaying)
-            this.isReporter = individualLearning(workers.individualForgetting, workers.individualExperimenting, 2);
+            this.isReporter = individualLearning(workers.individualForgetting, workers.individualExperimenting, 2,Workers.T);
+
+
+
     }
 
-    @Override
-    public int compareTo(Worker o) {
-        return (int) (o.utility - this.utility);
-    }
+
+
 }

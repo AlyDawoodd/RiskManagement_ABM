@@ -19,6 +19,7 @@ public class ReportingWithUi extends GUIState {
         ReportingWithUi vid = new ReportingWithUi();
         Console c = new Console(vid);
         c.setVisible(true);
+
     }
 
     public ReportingWithUi() {
@@ -51,7 +52,9 @@ public class ReportingWithUi extends GUIState {
     }
 
     public void load(SimState state) {
+
         super.load(state);
+
         setupPortrayals();
     }
 

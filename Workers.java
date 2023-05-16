@@ -15,7 +15,7 @@ public class Workers extends SimState {
     public static int numWorkers = 50;
     public static int numReporters = 0;
     public static int numNonReporters = 0;
-    public static double reward = 10.0;
+    public static double reward = 50.0;
     public static List<Worker> listWorkers = new ArrayList<Worker>();
     public static List<Double> reportersPerSimWithAvg = new ArrayList<>();
     public static List<Integer> reportersPerSimWithoutAvg = new ArrayList<>();
@@ -26,10 +26,15 @@ public class Workers extends SimState {
     public static double individualForgetting = 0.75;
     public static double individualExperimenting = 0.6;
 
+    public static int sampleSize = 1000;
+     public static int T= sampleSize+1;
+
+
+
 
 
     public static boolean UI = false;
-    public static boolean Sameplayer = false;
+   // public static boolean Sameplayer = false;
 
     public int getNumReporters() {
         return numReporters;
@@ -148,7 +153,7 @@ public class Workers extends SimState {
 
     public static void main(String[] args) {
         UI = true;
-        int sampleSize = 1000;
+        //int sampleSize = 1000;
         char caseStudy = '2';
         float sum;
         float avg;
@@ -156,29 +161,32 @@ public class Workers extends SimState {
         String learning = "Social";
         String numOfPlayers = "10players";
         String players = "DiffPlayers";
-        int simulationNumber = 100;
+        int simulationNumber = 1;
         for (int i = 0; i < sampleSize; i++) {
             reportersPerSimWithoutAvg.add(0);
         }
         for (int i = 0; i < simulationNumber; i++) {
             SimState state = new Workers(System.currentTimeMillis());
 
+           // System.out.println(T);
             state.start();
             do {
-                System.out.println(i);
+                //System.out.println(state.schedule.getSteps());
+               T= Worker.updateT(T);
+               // System.out.println(T);
                 if (!state.schedule.step(state)) break;
             }
             while (state.schedule.getSteps() < sampleSize);
 
             state.finish();
-
+            System.out.println(numReporters);
         }
         for (int i = 0; i < reportersPerSimWithoutAvg.size(); i++) {
             sum = reportersPerSimWithoutAvg.get(i);
             avg = sum / simulationNumber;
             reportersPerSimWithAvg.add(Math.floor(avg + 0.5));
         }
-        System.out.println(reportersPerSimWithAvg);
+       // System.out.println(reportersPerSimWithAvg);
         //  printResults(players, numOfPlayers, learning, caseStudy, sampleSize);
         System.exit(0);
     }
